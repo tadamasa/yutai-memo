@@ -41,7 +41,7 @@ URLと合言葉を知っている人は読み書きできるので、他の人�
 | `GET ?action=ping` | `{ "ok": true, "app": "yutai-hub" }`(合言葉なし。URLの確かめ用) |
 | `GET ?action=pull&since=<rev>&token=…` | `{ ok, rev, more, benefits:[…], receipts:[…], campaigns:[…] }`。`since` より新しい行だけを rev の古い順に最大400件。`more` が `true` なら、返ってきた `rev` を次の `since` にしてもう一度呼ぶ |
 | `GET ?action=holdings&token=…` | `{ ok, at, holdings:[{ code, name, shares, price }] }`。ポートフォリオ「保有株式」の4行目から、A=証券コード、B=銘柄名、D=株数、F=現在株価。証券コードでない行(空行・リンクの行)は飛ばす |
-| `POST { token, benefits:[…], receipts:[…], campaigns:[…] }` | `{ ok, rev, saved, skipped:[id…] }`。各要素は表の列名をキーにした1行で、`id` で upsert。`mtime` が表と同じか古いものは捨てて `skipped` に入れる。`deleted: true` は墓標(行は残して `deleted` を `1` に) |
+| `POST { token, benefits:[…], receipts:[…], campaigns:[…] }` | `{ ok, rev, saved, skipped:[id…], current:{ benefits, receipts, campaigns } }`。各要素は表の列名をキーにした1行で、`id` で upsert。`mtime` が表と同じか古いものは捨てて `skipped` に入れ、その行の表の今の中身を `current` に返す(端末はそれで手元を表に合わせる)。`deleted: true` は墓標(行は残して `deleted` を `1` に) |
 
 - 行の `rev` はハブが振る通し番号で、端末からは送りません。`mtime` は ISO 8601 の文字(例 `2026-11-13T09:30:00.000Z`)。最初に入っていた行の `2026-11-13` のような日付だけの値は、その日の0時(UTC)とみなします。
 - pull で返る行の `deleted` は `true` / `false`、`rev` は数です。表の中では `deleted` は `1` / `0` の文字です。

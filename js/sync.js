@@ -116,11 +116,12 @@ async function apply(name, items) {
 // 保有株式(ポートフォリオ)を取り直す。古いハブや一時的な失敗では、手元の一覧をそのまま使う
 export async function refreshHoldings() {
   const res = await ask('holdings');
-  if (!Array.isArray(res.holdings) || !res.holdings.length) return 0;
+  // 空の一覧も「全部売った」という正しい答えとして反映する(取得の失敗は ask が例外にするので、ここには来ない)
+  if (!Array.isArray(res.holdings)) return 0;
   await db.replaceAll('holdings', res.holdings.map(h => ({ code: String(h.code), name: h.name || '', shares: h.shares ?? null, price: h.price ?? null })));
   status.holdingsAt = res.at || new Date().toISOString();
   await db.setMeta('holdingsAt', status.holdingsAt);
-  return res.holdings.length;
+  return res.holdings.length || 1;
 }
 
 export function syncNow() {
@@ -141,10 +142,13 @@ export function syncNow() {
             body[k].push(rec ? Object.assign({}, rec, { id, mtime: rec.mtime || d.mtime, deleted: false }) : { id, mtime: d.mtime, deleted: true });
           }
         }
-        await post(body);
+        const res = await post(body);
         // 送っている間に書き直されたものは、次の回に送る
         for (const k of KINDS) for (const item of body[k]) if (dirty[k][item.id] && ms(dirty[k][item.id].mtime) <= ms(item.mtime)) delete dirty[k][item.id];
         saveDirty();
+        // 表のほうが新しくて捨てられた行は、表の今の中身に合わせる(pull の cursor がその行を越えていても取りこぼさない)
+        const current = res.current || {};
+        for (const k of KINDS) changed += await apply(k, current[k] || []);
       }
       // 2. 受け取る(rev より新しい行だけ、400件ずつ)
       let cursor = Number(await db.getMeta('syncCursor', 0)) || 0;

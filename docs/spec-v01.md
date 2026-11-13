@@ -69,7 +69,7 @@
 | `GET action=ping` | `{ ok: true, app: "yutai-hub" }`。合言葉不要 |
 | `GET action=pull&since=<rev>&token=` | since より新しい行を rev 順に最大400件。`more` で続きを知らせ、`rev` が次の since |
 | `GET action=holdings&token=` | ポートフォリオ「保有株式」を読み取り専用で返す |
-| `POST { token, benefits, receipts, campaigns }` | id で upsert。表の mtime 以上の古さの書き込みは捨てる(`skipped`)。deleted は墓標 |
+| `POST { token, benefits, receipts, campaigns }` | id で upsert。表の mtime 以上の古さの書き込みは捨てる(`skipped`)、その行の表の今の中身を `current` で返す。deleted は墓標 |
 
 - 合言葉は二本立て: `TOKEN`(端末用、`setup` で発行)と `SAKURA_TOKEN`(さくら用、`setupSakura` で発行)。SAKURA_TOKEN では削除を受け付けない。
 - 排他: LockService のスクリプトロック(20秒)。
@@ -81,9 +81,10 @@
 
 1. 端末で書くと(db.put / db.del)、その id を「未送信」に記録し、4秒後に同期する。開いたとき・アプリに戻ったとき(visibilitychange)にも同期する。
 2. 同期は、未送信を POST で送る(200件ずつ)→ `pull` を more がなくなるまで → `holdings` で保有株式を取り直す、の順。
-3. 受け取った行は、手元の未送信や手元の行のほうが mtime が新しければ捨てる。削除は手元から消す。受け取った書き込みは silent にして送り返さない。
-4. 接続時は `ping` で `yutai-hub` であることを確かめる(読書ハブのURLを入れる取り違えを防ぐ)。
-5. 古いハブや一時的な失敗で `holdings` が取れないときは、手元の一覧をそのまま使う。
+3. POST で捨てられた行(`skipped`)は、応答の `current` で手元を表に合わせる(端末の cursor がその行の rev を越えていても取りこぼさない)。
+4. 受け取った行は、手元の未送信や手元の行のほうが mtime が新しければ捨てる。削除は手元から消す。受け取った書き込みは silent にして送り返さない。
+5. 接続時は `ping` で `yutai-hub` であることを確かめる(読書ハブのURLを入れる取り違えを防ぐ)。
+6. `holdings` の取得に失敗したときは手元の一覧をそのまま使う。成功して空の一覧が返ったときは、全部売ったものとして空にする。
 
 ## 6. 画面
 

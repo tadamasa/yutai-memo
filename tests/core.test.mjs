@@ -175,6 +175,11 @@ test('POST で id ごとに upsert し、表より古い書き込みは捨てる
   // 古い書き込みは捨てる
   r = hub.post({ token: t, benefits: [{ ...edited, has_benefit: 'なし', mtime: '2026-11-13T09:00:00.000Z' }] });
   assert.deepEqual(r.skipped, ['ben-2702']);
+  // 捨てた行は表の今の中身を返す(端末が手元を合わせられるように)
+  assert.equal(r.current.benefits.length, 1);
+  assert.equal(r.current.benefits[0].has_benefit, 'あり');
+  assert.equal(r.current.benefits[0].rev, 2);
+  assert.equal(r.current.receipts.length, 0);
   assert.equal(hub.rowOf('benefits', 'ben-2702').has_benefit, 'あり');
   // 新しい受取を追加
   const rc = { id: 'rcp-a', code: '2702', company_name: '日本マクドナルドホールディングス(株)', benefit_name: '食事優待券', fiscal_year: '2026年6月', received_at: '2026-09-20', expires_at: '2027-03-31', status: '未使用', used_at: '', memo: '', mtime: '2026-11-13T10:01:00.000Z' };

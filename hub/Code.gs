@@ -15,7 +15,8 @@
  *   GET  ?action=ping                         → { ok, app: 'yutai-hub' }(合言葉なし)
  *   GET  ?action=pull&since=<rev>&token=…     → { ok, rev, more, benefits:[…], receipts:[…], campaigns:[…] }
  *   GET  ?action=holdings&token=…             → { ok, at, holdings:[{ code, name, shares, price }] }(ポートフォリオを読むだけ)
- *   POST 本文 { token, benefits:[…], receipts:[…], campaigns:[…] } → { ok, rev, saved, skipped }
+ *   POST 本文 { token, benefits:[…], receipts:[…], campaigns:[…] } → { ok, rev, saved, skipped, current }
+ *        current は skipped になった行の表の今の中身({ benefits:[…], … })。端末はこれで手元を表に合わせる。
  *        各要素は表の列名をキーにした行。id で upsert。mtime が表と同じか古いものは捨てる。deleted:true は墓標。
  */
 
@@ -94,7 +95,7 @@ function withLock_(fn) {
 
 function upsert_(req, isSakura) {
   const st = reconcileAll_(); // 先に、表で直接直された行に rev を振っておく
-  const out = { ok: true, saved: 0, skipped: [] };
+  const out = { ok: true, saved: 0, skipped: [], current: { benefits: [], receipts: [], campaigns: [] } };
   for (const kind of KINDS) {
     const t = st.tables[kind];
     let changed = false;
@@ -105,7 +106,12 @@ function upsert_(req, isSakura) {
       if (isSakura && del) { out.skipped.push(id); continue; } // さくら用合言葉では削除を受け付けない
       const mtime = mtimeText_(item.mtime);
       const i = t.index[id];
-      if (i !== undefined && ms_(t.rows[i].mtime) >= ms_(mtime)) { out.skipped.push(id); continue; } // 表のほうが新しい(か同じ)
+      if (i !== undefined && ms_(t.rows[i].mtime) >= ms_(mtime)) {
+        // 表のほうが新しい(か同じ)。端末の cursor がこの行の rev を越えていると pull では戻らないので、表の今の中身を返す
+        out.skipped.push(id);
+        out.current[kind].push(record_(kind, t.rows[i]));
+        continue;
+      }
       const row = i === undefined ? blank_(kind) : t.rows[i];
       if (!del) for (const c of COLS[kind]) if (META.indexOf(c) < 0 && c in item) row[c] = text_(item[c]);
       row.id = id;
