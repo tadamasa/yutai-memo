@@ -1,0 +1,307 @@
+/* ============================================================
+   Apple HIG Design Tokens (Web approximation)
+   iOS 26 / 27 Liquid Glass 準拠
+   ------------------------------------------------------------
+   注意: Apple が配布しているのは適応的な動的カラーであり、
+   固定の hex ではない。以下はコミュニティ実測に基づく近似値。
+   厳密な値が必要な場合は Apple Design Resources を参照。
+   ============================================================ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ---------- Typography ---------- */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "SF Pro JP",
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    system-ui, "Yu Gothic UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --font-rounded: -apple-system-rounded, var(--font-sans);
+
+  /* ---------- Spacing (8pt grid) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;   /* 画面左右マージン標準 */
+  --space-5: 20px;   /* inset grouped リスト */
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* ---------- Radius ---------- */
+  --r-capsule: 9999px;
+  --r-list: 10px;
+  --r-card: 12px;
+  --r-card-lg: 16px;
+  --r-alert: 14px;
+  --r-sheet: 10px;
+
+  /* ---------- Hit target ---------- */
+  --hit: 44px;
+
+  /* ---------- Motion ---------- */
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-press: 0.1s;
+  --dur-fast: 0.2s;
+  --dur-base: 0.3s;
+  --dur-sheet: 0.4s;
+
+  /* ---------- Accent (system colors, light) ---------- */
+  --sys-blue:   #007AFF;
+  --sys-green:  #34C759;
+  --sys-indigo: #5856D6;
+  --sys-orange: #FF9500;
+  --sys-pink:   #FF2D55;
+  --sys-purple: #AF52DE;
+  --sys-red:    #FF3B30;
+  --sys-teal:   #30B0C7;
+  --sys-yellow: #FFCC00;
+  --color-accent: var(--sys-blue);
+  --color-destructive: var(--sys-red);
+
+  /* ---------- Grays ---------- */
+  --gray-1: #8E8E93;
+  --gray-2: #AEAEB2;
+  --gray-3: #C7C7CC;
+  --gray-4: #D1D1D6;
+  --gray-5: #E5E5EA;
+  --gray-6: #F2F2F7;
+
+  /* ---------- Labels ---------- */
+  --color-label:            rgba(0, 0, 0, 1);
+  --color-label-secondary:  rgba(60, 60, 67, 0.60);
+  --color-label-tertiary:   rgba(60, 60, 67, 0.30);
+  --color-label-quaternary: rgba(60, 60, 67, 0.18);
+  --color-label-inverse:    #FFFFFF;
+
+  /* ---------- Backgrounds ---------- */
+  --bg-base:              #FFFFFF;
+  --bg-secondary:         #F2F2F7;
+  --bg-tertiary:          #FFFFFF;
+  --bg-grouped:           #F2F2F7;  /* 画面背景 */
+  --bg-grouped-secondary: #FFFFFF;  /* カード面 */
+  --bg-elevated:          #FFFFFF;  /* 透過が無効な時のガラス代替 */
+
+  /* ---------- Fills (コントロールの塗り) ---------- */
+  --bg-fill-primary:    rgba(120, 120, 128, 0.20);
+  --bg-fill-secondary:  rgba(120, 120, 128, 0.16);
+  --bg-fill-tertiary:   rgba(118, 118, 128, 0.12);
+  --bg-fill-quaternary: rgba(116, 116, 128, 0.08);
+
+  /* ---------- Separators ---------- */
+  --color-separator:        rgba(60, 60, 67, 0.29);
+  --color-separator-opaque: #C6C6C8;
+  --hairline: 0.5px;
+
+  /* ---------- Liquid Glass ---------- */
+  --glass-blur: 24px;
+  --glass-saturate: 180%;
+  --glass-opacity: 0.72;
+  --glass-border:    rgba(255, 255, 255, 0.45);
+  --glass-highlight: rgba(255, 255, 255, 0.65);
+  --glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.06),
+                  0 8px 24px rgba(0, 0, 0, 0.04);
+  --scrim: rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   Dark
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sys-blue:   #0A84FF;
+    --sys-green:  #30D158;
+    --sys-indigo: #5E5CE6;
+    --sys-orange: #FF9F0A;
+    --sys-pink:   #FF375F;
+    --sys-purple: #BF5AF2;
+    --sys-red:    #FF453A;
+    --sys-teal:   #40C8E0;
+    --sys-yellow: #FFD60A;
+
+    --gray-1: #8E8E93;
+    --gray-2: #636366;
+    --gray-3: #48484A;
+    --gray-4: #3A3A3C;
+    --gray-5: #2C2C2E;
+    --gray-6: #1C1C1E;
+
+    --color-label:            rgba(255, 255, 255, 1);
+    --color-label-secondary:  rgba(235, 235, 245, 0.60);
+    --color-label-tertiary:   rgba(235, 235, 245, 0.30);
+    --color-label-quaternary: rgba(235, 235, 245, 0.16);
+    --color-label-inverse:    #000000;
+
+    --bg-base:              #000000;
+    --bg-secondary:         #1C1C1E;
+    --bg-tertiary:          #2C2C2E;
+    --bg-grouped:           #000000;
+    --bg-grouped-secondary: #1C1C1E;
+    --bg-elevated:          #1C1C1E;
+
+    --bg-fill-primary:    rgba(120, 120, 128, 0.36);
+    --bg-fill-secondary:  rgba(120, 120, 128, 0.32);
+    --bg-fill-tertiary:   rgba(118, 118, 128, 0.24);
+    --bg-fill-quaternary: rgba(116, 116, 128, 0.18);
+
+    --color-separator:        rgba(84, 84, 88, 0.65);
+    --color-separator-opaque: #38383A;
+
+    --glass-opacity: 0.62;
+    --glass-border:    rgba(255, 255, 255, 0.14);
+    --glass-highlight: rgba(255, 255, 255, 0.22);
+    --glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --scrim: rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* ============================================================
+   Base reset
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.41px;
+  color: var(--color-label);
+  background-color: var(--bg-grouped);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+}
+@supports not (min-height: 100dvh) {
+  body { min-height: -webkit-fill-available; }
+}
+
+:lang(ja) { letter-spacing: 0; }
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: max(16px, 1rem);   /* iOS の自動ズームを防ぐ */
+  color: inherit;
+}
+button { -webkit-appearance: none; appearance: none; border: none; background: none; cursor: pointer; }
+a { color: var(--color-accent); text-decoration: none; }
+
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* ============================================================
+   Type scale
+   px を先に、-apple-system-* で段階的強化（実 Dynamic Type）
+   ============================================================ */
+.t-large-title { font-size: 34px; line-height: 41px; letter-spacing: 0.37px; font-weight: 400; }
+.t-title-1     { font-size: 28px; line-height: 34px; letter-spacing: 0.36px; font-weight: 400; }
+.t-title-2     { font-size: 22px; line-height: 28px; letter-spacing: 0.35px; font-weight: 400; }
+.t-title-3     { font-size: 20px; line-height: 25px; letter-spacing: 0.38px; font-weight: 400; }
+.t-headline    { font-size: 17px; line-height: 22px; letter-spacing: -0.41px; font-weight: 600; }
+.t-body        { font-size: 17px; line-height: 22px; letter-spacing: -0.41px; font-weight: 400; }
+.t-callout     { font-size: 16px; line-height: 21px; letter-spacing: -0.32px; font-weight: 400; }
+.t-subheadline { font-size: 15px; line-height: 20px; letter-spacing: -0.24px; font-weight: 400; }
+.t-footnote    { font-size: 13px; line-height: 18px; letter-spacing: -0.08px; font-weight: 400; }
+.t-caption-1   { font-size: 12px; line-height: 16px; letter-spacing: 0;       font-weight: 400; }
+.t-caption-2   { font-size: 11px; line-height: 13px; letter-spacing: 0.07px;  font-weight: 400; }
+
+@supports (font: -apple-system-body) {
+  .t-large-title { font: -apple-system-large-title; }
+  .t-title-1     { font: -apple-system-title1; }
+  .t-title-2     { font: -apple-system-title2; }
+  .t-title-3     { font: -apple-system-title3; }
+  .t-headline    { font: -apple-system-headline; }
+  .t-body        { font: -apple-system-body; }
+  .t-callout     { font: -apple-system-callout; }
+  .t-subheadline { font: -apple-system-subheadline; }
+  .t-footnote    { font: -apple-system-footnote; }
+  .t-caption-1   { font: -apple-system-caption1; }
+  .t-caption-2   { font: -apple-system-caption2; }
+}
+
+.c-secondary  { color: var(--color-label-secondary); }
+.c-tertiary   { color: var(--color-label-tertiary); }
+.c-accent     { color: var(--color-accent); }
+.c-destructive{ color: var(--color-destructive); }
+
+/* ============================================================
+   Liquid Glass material
+   ============================================================ */
+.glass {
+  position: relative;
+  isolation: isolate;               /* Safari の角丸漏れ対策 */
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  background-color: color-mix(in srgb,
+    var(--bg-elevated) calc(var(--glass-opacity) * 100%), transparent);
+  border: var(--hairline) solid var(--glass-border);
+  box-shadow: inset 0 var(--hairline) 0 0 var(--glass-highlight), var(--glass-shadow);
+}
+
+/* clear 変種: メディアの上でのみ使用。減光層が前提 */
+.glass--clear { --glass-opacity: 0.28; --glass-blur: 12px; }
+.glass--clear::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(to bottom, rgba(0,0,0,.28), rgba(0,0,0,.10));
+  border-radius: inherit;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { background-color: var(--bg-elevated); }
+}
+
+/* ============================================================
+   Accessibility fallbacks — 必ずセットで有効にしておく
+   ============================================================ */
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: var(--bg-elevated);
+    border-color: var(--color-separator-opaque);
+  }
+  .glass--clear::before { background: var(--bg-elevated); }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-label-secondary: var(--color-label);
+    --color-separator: var(--color-separator-opaque);
+    --glass-opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+.hit { min-width: var(--hit); min-height: var(--hit);
+       display: inline-flex; align-items: center; justify-content: center; }
+.safe-t { padding-top:    max(var(--space-2), env(safe-area-inset-top)); }
+.safe-b { padding-bottom: max(var(--space-2), env(safe-area-inset-bottom)); }
+.safe-x { padding-left:  max(var(--space-4), env(safe-area-inset-left));
+          padding-right: max(var(--space-4), env(safe-area-inset-right)); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}

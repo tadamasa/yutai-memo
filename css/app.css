@@ -1,0 +1,229 @@
+/* アプリ固有のスタイル。hig-tokens.css / hig-components.css の後に読み込む。
+   主題は「熨斗紙と水引」: 生成りの紙に、紅と金の細い紐。届いた贈り物を気持ちよく受け取りきるための手触り。
+   色・間・動きの値はこの先頭にまとめてあり、ここを変えれば全体が変わる。 */
+
+:root {
+  /* 紙と墨 */
+  --paper: #F5F0E6;          /* 画面の地(生成り) */
+  --paper-card: #FFFCF6;     /* カードの面(奉書紙) */
+  --ink: #2A2420;            /* 本文(墨) */
+  --ink-2: rgba(42, 36, 32, 0.62);
+  --ink-3: rgba(42, 36, 32, 0.36);
+  --rule: rgba(42, 36, 32, 0.14);
+  /* 水引 */
+  --beni: #B3313A;           /* 紅: 優待あり・期限切れ */
+  --kin: #9C7A2B;            /* 金: 要確認・期限が近い */
+  --kin-soft: color-mix(in srgb, #C9A44C 18%, transparent);
+  --beni-soft: color-mix(in srgb, #B3313A 11%, transparent);
+  --nezumi: #8A837B;         /* 鼠: 優待なし・使い終えた */
+  /* 文字 */
+  --font-serif: "Hiragino Mincho ProN", "Hiragino Mincho Pro", "YuMincho", "Yu Mincho", "Noto Serif JP", "Noto Serif CJK JP", serif;
+  /* 動き */
+  --ease-out: cubic-bezier(.2, .8, .3, 1);
+  --dur-in: .26s;
+  --rise-step: 40ms;
+
+  --bg-grouped: var(--paper);
+  --bg-grouped-secondary: var(--paper-card);
+  --bg-elevated: var(--paper-card);
+  --color-accent: var(--beni);
+  --color-label: var(--ink);
+  --color-label-secondary: var(--ink-2);
+  --color-label-tertiary: var(--ink-3);
+  --color-separator: var(--rule);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #14110E;
+    --paper-card: #201C18;
+    --ink: #EFE8DC;
+    --ink-2: rgba(239, 232, 220, 0.64);
+    --ink-3: rgba(239, 232, 220, 0.36);
+    --rule: rgba(239, 232, 220, 0.14);
+    --beni: #E26A70;
+    --kin: #D7B261;
+    --kin-soft: color-mix(in srgb, #D7B261 16%, transparent);
+    --beni-soft: color-mix(in srgb, #E26A70 14%, transparent);
+    --nezumi: #9A928A;
+  }
+}
+
+body { background-color: var(--bg-grouped); color: var(--color-label); margin: 0; font-family: var(--font-sans); font-size: 17px; line-height: 22px; -webkit-text-size-adjust: 100%; }
+button { font: inherit; background: none; border: none; color: inherit; cursor: pointer; padding: 0; }
+input, textarea, select { font: inherit; color: var(--color-label); }
+[hidden] { display: none !important; }
+a { color: var(--color-accent); }
+.muted { color: var(--color-label-secondary); }
+.small { font-size: 13px; line-height: 18px; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* 見出しは明朝 */
+.nav__title-large, .nav__title { font-family: var(--font-serif); font-weight: 600; letter-spacing: .02em; }
+.nav__plus { font-size: 26px; font-weight: 300; padding-right: var(--space-2); }
+
+/* 画面の入り: 短いフェードと少しの上昇 */
+#view.is-in { animation: view-in var(--dur-in) var(--ease-out); }
+@keyframes view-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+[data-rise] { animation: rise .32s var(--ease-out) both; animation-delay: calc(var(--i, 0) * var(--rise-step)); }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.btn:active, .stock:active, .receipt:active, .ribbon__months button:active { transform: scale(.97); }
+
+/* 入力欄は16px以上(iOSの勝手な拡大を防ぐ) */
+input, textarea, select { font-size: 16px; }
+
+.card { background-color: var(--bg-grouped-secondary); border-radius: var(--r-card); margin: 0 var(--space-4); padding: var(--space-2) var(--space-4); }
+.card + .card { margin-top: var(--space-3); }
+.row { display: flex; align-items: center; gap: var(--space-3); min-height: var(--hit); }
+.row + .row { border-top: var(--hairline) solid var(--color-separator); }
+.row label, .row__label { flex: none; color: var(--color-label-secondary); font-size: 15px; }
+.row input, .row select { flex: 1; min-width: 0; border: none; outline: none; background: transparent; text-align: right; min-height: var(--hit); }
+.row__value { margin-left: auto; font-size: 15px; }
+.actions { display: flex; gap: var(--space-3); padding: var(--space-4); }
+.actions .btn { flex: 1; text-decoration: none; }
+.btn { text-decoration: none; }
+.btn--danger { color: var(--beni); }
+.lead { display: flex; gap: var(--space-2); flex-wrap: wrap; margin: var(--space-2) var(--space-4) var(--space-3); }
+.empty-note { margin: var(--space-6) var(--space-6); text-align: center; color: var(--color-label-secondary); font-size: 15px; line-height: 24px; font-family: var(--font-serif); }
+
+.tab-warning { margin: 8px 16px 0; padding: 10px 12px; border-radius: 12px; background: var(--kin-soft); font-size: 14px; line-height: 1.45; }
+.toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translateX(-50%); background-color: var(--bg-elevated); color: var(--color-label); border: var(--hairline) solid var(--color-separator); padding: var(--space-2) var(--space-4); border-radius: var(--r-capsule); box-shadow: var(--glass-shadow); font-size: 15px; z-index: 200; max-width: 86vw; }
+svg.ic { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- 暦帯(12か月の権利確定) ---------- */
+.ribbon { position: relative; margin: var(--space-1) var(--space-4) var(--space-3); }
+.ribbon__cord { position: absolute; left: 0; right: 0; top: 30px; height: 3px; border-radius: 2px;
+  background: linear-gradient(to bottom, var(--beni) 0 1px, transparent 1px 2px, var(--kin) 2px 3px); opacity: .55; }
+.ribbon__months { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); }
+.ribbon__months button { min-height: 52px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding-top: 4px; border-radius: 10px; color: var(--color-label-tertiary); transition: background-color .2s var(--ease-out), transform .12s; }
+.ribbon__num { font-family: var(--font-serif); font-size: 15px; line-height: 18px; }
+.ribbon__months button.has { color: var(--color-label); }
+.ribbon__months button.is-now .ribbon__num { color: var(--kin); font-weight: 700; }
+.ribbon__months button.is-active { background-color: var(--beni-soft); color: var(--beni); }
+.ribbon__dots { display: flex; gap: 2px; height: 9px; align-items: center; margin-top: 4px; }
+.ribbon__dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--beni); box-shadow: 0 0 0 1.5px var(--paper); }
+.ribbon__more { font-size: 10px; line-height: 12px; color: var(--beni); }
+.ribbon__hint { margin: var(--space-1) 0 0; font-size: 12px; line-height: 17px; color: var(--color-label-secondary); text-align: center; font-family: var(--font-serif); }
+
+/* ---------- 検索と並び ---------- */
+.search-wrap { padding: 0 var(--space-4) var(--space-3); }
+.search-field { width: 100%; min-height: var(--hit); border: none; outline: none; border-radius: var(--r-capsule); padding: 0 var(--space-4); background-color: color-mix(in srgb, var(--ink) 7%, transparent); }
+.search-field:focus-visible { outline: 2px solid var(--color-accent); }
+.segmented-wrap { padding: 0 var(--space-4) var(--space-2); overflow-x: auto; }
+.segmented--wide { display: flex; width: 100%; box-sizing: border-box; }
+.segmented--wide .segmented__item { flex: 1; font-size: 14px; min-height: 36px; white-space: nowrap; }
+.sort-bar { display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-4); font-size: 14px; }
+.sort-bar select { margin-left: auto; min-height: var(--hit); border: none; background: transparent; color: var(--color-accent); font-size: 16px; text-align: right; }
+
+/* ---------- 銘柄の一覧 ---------- */
+.stocks { list-style: none; margin: 0 0 var(--space-2); padding: 0 var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+.stock { display: block; padding: var(--space-3) var(--space-4); border-radius: var(--r-card); background-color: var(--paper-card); color: inherit; text-decoration: none; transition: transform .12s; box-shadow: 0 1px 0 var(--rule); }
+.stock.is-sold { opacity: .6; }
+.stock__head { display: flex; align-items: flex-start; gap: var(--space-2); }
+.stock__name { flex: 1; min-width: 0; font-family: var(--font-serif); font-size: 17px; line-height: 23px; font-weight: 600; }
+.stock__sub { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--space-2); margin-top: 2px; font-size: 13px; line-height: 18px; color: var(--color-label-secondary); font-variant-numeric: tabular-nums; }
+.stock__body { margin-top: var(--space-2); font-size: 15px; line-height: 21px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.stock__body .tag { margin-right: 6px; vertical-align: 1px; }
+.stock__tiers { margin-top: 4px; font-size: 13px; line-height: 18px; color: var(--color-label-secondary); white-space: pre-line; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tag { display: inline-block; font-size: 12px; line-height: 18px; padding: 0 8px; border-radius: var(--r-capsule); background-color: color-mix(in srgb, var(--ink) 7%, transparent); color: var(--color-label-secondary); }
+.month-chip { font-size: 12px; line-height: 16px; padding: 0 6px; border-radius: 4px; color: var(--beni); border: 1px solid color-mix(in srgb, var(--beni) 40%, transparent); }
+
+/* 優待の有無: 紅=あり、金の破線=要確認、鼠=なし */
+.badge { flex: none; font-size: 12px; line-height: 20px; padding: 0 9px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+.badge--yes { color: #fff; background: var(--beni); box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--kin) 70%, transparent); }
+.badge--check { color: var(--kin); border: 1px dashed var(--kin); }
+.badge--no { color: var(--nezumi); background: color-mix(in srgb, var(--nezumi) 14%, transparent); }
+
+/* ---------- フォーム(熨斗紙) ---------- */
+.stock-head { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; padding: 0 var(--space-4) var(--space-3); }
+.stock-head__sub { flex: 1; min-width: 12em; margin: 0; font-size: 14px; color: var(--color-label-secondary); font-variant-numeric: tabular-nums; }
+.noshi { position: relative; }
+.noshi__band { height: 4px; margin: 0 var(--space-4) var(--space-3); border-radius: 2px; background: linear-gradient(to bottom, var(--beni) 0 1.5px, transparent 1.5px 2.5px, var(--kin) 2.5px 4px); opacity: .7; }
+.form-card { padding-top: 0; padding-bottom: 0; }
+.frow { display: flex; align-items: center; gap: var(--space-3); min-height: var(--hit); }
+.frow + .frow { border-top: var(--hairline) solid var(--color-separator); }
+.frow > label { flex: none; width: 7.2em; color: var(--color-label-secondary); font-size: 14px; line-height: 18px; }
+.frow input, .frow select { flex: 1; min-width: 0; min-height: var(--hit); border: none; outline: none; background: transparent; }
+.frow input[type="date"] { -webkit-appearance: none; appearance: none; text-align: left; }
+.frow select { -webkit-appearance: none; appearance: none; color: var(--color-accent); }
+.frow--area { flex-direction: column; align-items: stretch; gap: 2px; padding: var(--space-2) 0; }
+.frow--area > label { width: auto; }
+.frow textarea { width: 100%; border: none; outline: none; background: transparent; resize: vertical; line-height: 23px; min-height: 48px; padding: 0; }
+.frow input:focus-visible, .frow select:focus-visible, .frow textarea:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: 6px; }
+.frow .btn--small { flex: none; }
+
+.has-pick { display: flex; gap: var(--space-2); margin: 0 var(--space-4) var(--space-3); padding: 0; border: none; }
+.has-pick legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.has-pick__item { flex: 1; position: relative; }
+.has-pick__item input { position: absolute; opacity: 0; inset: 0; margin: 0; }
+.has-pick__item span { display: flex; align-items: center; justify-content: center; min-height: var(--hit); border-radius: 10px; background: var(--paper-card); font-family: var(--font-serif); font-size: 16px; color: var(--color-label-secondary); border: 1px solid var(--rule); transition: background-color .2s var(--ease-out), color .2s; }
+.has-pick__item input:checked + span { color: var(--paper-card); background: var(--beni); border-color: var(--beni); }
+.has-pick__item:nth-child(4) input:checked + span { background: var(--kin); border-color: var(--kin); }
+.has-pick__item:nth-child(3) input:checked + span { background: var(--nezumi); border-color: var(--nezumi); }
+.has-pick__item input:focus-visible + span { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+/* ---------- 受取・使用 ---------- */
+.receipts { list-style: none; margin: 0; padding: 0 var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+.receipt { display: flex; gap: var(--space-3); align-items: stretch; padding: var(--space-3); border-radius: var(--r-card); background: var(--paper-card); color: inherit; text-decoration: none; border-left: 4px solid transparent; transition: transform .12s; box-shadow: 0 1px 0 var(--rule); }
+.receipt__when { flex: none; width: 5.6em; display: flex; flex-direction: column; justify-content: center; border-right: 1px dashed var(--rule); padding-right: var(--space-2); font-variant-numeric: tabular-nums; }
+.receipt__label { font-size: 11px; line-height: 14px; color: var(--color-label-secondary); }
+.receipt__when b { font-family: var(--font-serif); font-size: 15px; line-height: 20px; }
+.receipt__left { font-size: 12px; line-height: 16px; color: var(--color-label-secondary); }
+.receipt__main { flex: 1; min-width: 0; }
+.receipt__name { font-family: var(--font-serif); font-weight: 600; font-size: 16px; line-height: 22px; }
+.receipt__benefit { font-size: 15px; line-height: 20px; }
+.receipt__sub { font-size: 13px; line-height: 18px; color: var(--color-label-secondary); margin-top: 2px; }
+.receipt--soon { border-left-color: var(--kin); background: color-mix(in srgb, var(--kin) 7%, var(--paper-card)); }
+.receipt--soon .receipt__when b { color: var(--kin); }
+.receipt--expired { border-left-color: var(--beni); background: color-mix(in srgb, var(--beni) 7%, var(--paper-card)); }
+.receipt--expired .receipt__when b { color: var(--beni); }
+.receipt--used { opacity: .62; }
+.receipt--used .receipt__when b { text-decoration: line-through; text-decoration-color: var(--ink-3); }
+.flag { display: inline-block; font-family: var(--font-sans); font-size: 12px; line-height: 18px; font-weight: 600; padding: 0 7px; border-radius: 4px; vertical-align: 2px; }
+.flag--over { color: #fff; background: var(--beni); }
+.flag--soon { color: var(--kin); background: var(--kin-soft); }
+
+/* ---------- 特典(半券つきの札) ---------- */
+.ticket { position: relative; display: grid; grid-template-columns: 1fr 84px; margin: 0 var(--space-4) var(--space-3); border-radius: var(--r-card); background: var(--paper-card); box-shadow: 0 1px 0 var(--rule); overflow: hidden; }
+.ticket::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(to bottom, var(--beni) 0 1.5px, transparent 1.5px 2.5px, var(--kin) 2.5px 4px); opacity: .8; }
+.ticket__left { padding: var(--space-4) var(--space-3) var(--space-2) var(--space-4); min-width: 0; }
+.ticket__company { margin: 0; font-size: 13px; line-height: 18px; color: var(--color-label-secondary); }
+.ticket__title { margin: 2px 0 var(--space-2); font-family: var(--font-serif); font-size: 18px; line-height: 26px; font-weight: 600; }
+.ticket__dl { display: grid; grid-template-columns: auto 1fr; gap: 4px var(--space-2); margin: 0; font-size: 14px; line-height: 20px; }
+.ticket__dl dt { color: var(--color-label-secondary); white-space: nowrap; }
+.ticket__dl dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.ticket__memo { color: var(--color-label-secondary); }
+.ticket__stub { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-4) var(--space-1) var(--space-2); border-left: 1.5px dashed var(--rule); text-align: center; }
+.ticket__ato { font-size: 12px; line-height: 14px; color: var(--color-label-secondary); }
+.ticket__days { font-family: var(--font-serif); font-size: 40px; line-height: 44px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ticket__unit { font-size: 11px; line-height: 14px; color: var(--color-label-secondary); }
+.ticket__foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; padding: var(--space-2) var(--space-3) var(--space-3) var(--space-4); border-top: var(--hairline) solid var(--rule); }
+.ticket__foot .btn--plain { margin-left: auto; }
+.ticket--soon .ticket__days, .ticket--today .ticket__days { color: var(--beni); }
+.ticket--today .ticket__unit { color: var(--beni); font-weight: 600; }
+.ticket--over, .ticket--done { opacity: .66; }
+.ticket--over .ticket__days, .ticket--done .ticket__days { font-size: 24px; color: var(--nezumi); }
+.status-pick { min-height: 36px; padding: 0 28px 0 12px; border-radius: var(--r-capsule); border: 1px solid var(--rule); background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 11px center; -webkit-appearance: none; appearance: none; font-size: 16px; position: relative; }
+.status-pick::before { content: ""; position: absolute; inset: -4px 0; }
+.status-pick--応募予定, .status-pick--未確認 { border-color: color-mix(in srgb, var(--kin) 60%, transparent); color: var(--kin); }
+.status-pick--応募済, .status-pick--当選 { border-color: color-mix(in srgb, var(--beni) 60%, transparent); color: var(--beni); }
+
+/* ---------- 設定 ---------- */
+.fold { margin: var(--space-2) 0 0; }
+.fold:first-child { margin-top: var(--space-3); }
+.fold > summary { margin: 0 var(--space-4); border-radius: var(--r-list); background-color: var(--bg-grouped-secondary); font-weight: 600; list-style: none; display: flex; align-items: center; justify-content: space-between; min-height: var(--hit); padding: 0 var(--space-4); cursor: pointer; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::after { content: "›"; color: var(--color-label-tertiary); font-size: 20px; transition: transform .2s; }
+.fold[open] > summary::after { transform: rotate(90deg); }
+.fold > summary small { color: var(--color-label-secondary); font-size: 13px; margin-left: auto; margin-right: var(--space-2); font-weight: 400; }
+.fold__body { padding: var(--space-3) 0 var(--space-2); }
+#view > .fold > .fold__body > .ticket:first-child { margin-top: 0; }
+.story p { margin: var(--space-2) 0; font-family: var(--font-serif); font-size: 15px; line-height: 26px; }
+.list-section__footer a { color: var(--color-accent); }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ナビゲーション: 長い銘柄名でも「戻る」が折り返さないように */
+.nav__back { white-space: nowrap; }
+.nav__title { min-width: 0; max-width: 58vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav__title-large.is-long { font-size: 26px; line-height: 33px; }
+.content { padding-top: var(--space-2); }
